@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mes Shampooings</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f7f3ff;
+      --card: #ffffff;
+      --shadow: 0 4px 20px rgba(120,80,200,0.10);
+      --accent: #a259f7;
+      --radius: 18px;
+      --font: 'Nunito', sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      min-height: 100vh;
+      padding: 16px;
+    }
+    .header { text-align: center; margin-bottom: 18px; }
+    .header h1 { font-size: 1.4rem; font-weight: 900; color: #3b1fa3; }
+    .header p { font-size: 0.78rem; color: #9c8ec1; margin-top: 2px; }
+
+    .cycle-card {
+      background: linear-gradient(135deg, #7c3aed, #a855f7, #ec4899);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      color: white;
+      margin-bottom: 14px;
+      box-shadow: 0 8px 30px rgba(124,58,237,0.3);
+    }
+    .cycle-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+    .cycle-label { font-size: 0.82rem; font-weight: 600; opacity: 0.85; width: 150px; flex-shrink: 0; }
+    .pastille-grande {
+      width: 36px; height: 36px; border-radius: 50%;
+      border: 4px solid white;
+      box-shadow: 0 0 0 3px rgba(0,0,0,0.25), 0 4px 12px rgba(0,0,0,0.3);
+      flex-shrink: 0;
+    }
+    .nom-shamp { font-size: 0.88rem; font-weight: 700; }
+
+    .btn-fait {
+      width: 100%; background: white; color: #7c3aed;
+      border: none; border-radius: 12px; padding: 12px;
+      font-family: var(--font); font-size: 1rem; font-weight: 900;
+      cursor: pointer; margin-top: 4px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+      transition: transform 0.15s;
+    }
+    .btn-fait:active { transform: scale(0.97); }
+    .btn-fait:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .btn-gris {
+      width: 100%; background: #e5e7eb; color: #4b5563;
+      border: none; border-radius: 12px; padding: 10px;
+      font-family: var(--font); font-size: 0.88rem; font-weight: 700;
+      cursor: pointer; margin-bottom: 14px;
+      transition: transform 0.15s;
+    }
+    .btn-gris:active { transform: scale(0.97); }
+
+    .section-title {
+      font-size: 0.75rem; font-weight: 900; color: #9c8ec1;
+      text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;
+    }
+
+    .shamp-card {
+      background: var(--card); border-radius: var(--radius);
+      padding: 12px 14px; margin-bottom: 10px;
+      box-shadow: var(--shadow); border-left: 5px solid #ddd;
+    }
+    .shamp-card.inactif { opacity: 0.55; }
+    .shamp-top { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .pastille-small {
+      width: 22px; height: 22px; border-radius: 50%;
+      flex-shrink: 0; box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    }
+    .shamp-nom { font-size: 0.92rem; font-weight: 700; color: #1e1b4b; flex: 1; }
+    .shamp-bottom { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+    .compteur {
+      background: #f3f0ff; color: #7c3aed;
+      border-radius: 8px; padding: 3px 10px;
+      font-size: 0.78rem; font-weight: 700;
+    }
+    .compteur.alerte-rouge { background: #fee2e2; color: #dc2626; }
+
+    .check-group { display: flex; gap: 6px; margin-left: auto; align-items: center; }
+    .check-label {
+      display: flex; align-items: center; gap: 4px;
+      font-size: 0.72rem; font-weight: 600; color: #6b7280;
+      cursor: pointer; background: #f9fafb;
+      border: 1.5px solid #e5e7eb; border-radius: 8px;
+      padding: 3px 8px; transition: all 0.2s;
+    }
+    .check-label input { display: none; }
+    .check-label.actif-checked { background: #dcfce7; border-color: #22c55e; color: #15803d; }
+    .check-label.inactif-checked { background: #fee2e2; border-color: #f87171; color: #dc2626; }
+
+    .btn-reset {
+      background: #fef3c7; color: #d97706;
+      border: 1.5px solid #fcd34d; border-radius: 8px;
+      padding: 3px 10px; font-family: var(--font);
+      font-size: 0.72rem; font-weight: 700;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .btn-reset:active { background: #fcd34d; transform: scale(0.96); }
+
+    .toast {
+      position: fixed; bottom: 20px; left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #1e1b4b; color: white;
+      padding: 10px 22px; border-radius: 30px;
+      font-size: 0.85rem; font-weight: 700;
+      transition: transform 0.35s cubic-bezier(.34,1.56,.64,1);
+      z-index: 999; white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+    .loader { text-align: center; color: #a78bfa; font-size: 0.9rem; font-weight: 600; padding: 30px; }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🧴 Mes Shampooings</h1>
+  <p id="date-today"></p>
+</div>
+
+<div id="app"><div class="loader">Chargement...</div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+  var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz5rKOhtLHZke6AQtznscY34nQz5KHcCEd6P1-KWTCKzV17h0caclOoYZDe-lPp4ebtKw/exec";
+
+  // Date du jour
+  var today = new Date();
+  document.getElementById('date-today').textContent =
+    today.toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long' });
+
+  // Appel API
+  function callScript(action, params, callback) {
+    var url = SCRIPT_URL + "?action=" + action;
+    if (params) {
+      Object.keys(params).forEach(function(k) {
+        url += "&" + k + "=" + encodeURIComponent(params[k]);
+      });
+    }
+    fetch(url)
+      .then(function(r) { return r.json(); })
+      .then(callback)
+      .catch(function(e) { showToast("❌ Erreur : " + e.message); });
+  }
+
+  // Chargement initial
+  callScript("getPlanning", null, render);
+
+  var nomParCouleur = {};
+
+  function render(data) {
+    nomParCouleur = {};
+    data.shampoings.forEach(function(s) {
+      nomParCouleur[s.coul.toLowerCase()] = s.nom;
+    });
+
+    var nomJour     = nomParCouleur[data.jour.toLowerCase()] || '—';
+    var nomProchain = nomParCouleur[data.prochain.toLowerCase()] || '—';
+
+    var html = '';
+
+    // Carte cycle
+    html += `
+      <div class="cycle-card">
+        <div class="cycle-row">
+          <span class="cycle-label">Aujourd'hui :</span>
+          <div class="pastille-grande" style="background:${data.jour}"></div>
+          <span class="nom-shamp">${nomJour}</span>
+        </div>
+        <div class="cycle-row">
+          <span class="cycle-label">Prochain :</span>
+          <div class="pastille-grande" style="background:${data.prochain}"></div>
+          <span class="nom-shamp">${nomProchain}</span>
+        </div>
+        <button class="btn-fait" id="btn-fait" onclick="validerFait()">✅ Shampoing fait !</button>
+      </div>
+    `;
+
+    // Bouton soin spécial
+    if (data.soinDuJour) {
+      html += `
+        <div style="background:linear-gradient(135deg,#ff0000,#ff6b6b);border-radius:18px;padding:14px 20px;margin-bottom:14px;color:white;box-shadow:0 8px 30px rgba(255,0,0,0.3);">
+          <div style="font-size:0.9rem;font-weight:900;margin-bottom:8px;">🟥 SOIN SPÉCIAL DU JOUR !</div>
+          <div style="font-size:0.78rem;opacity:0.9;margin-bottom:10px;">N'oublie pas ton soin spécial avec le shampoing rouge !</div>
+          <button onclick="validerSoin()" style="width:100%;background:white;color:#ff0000;border:none;border-radius:12px;padding:10px;font-family:inherit;font-size:0.9rem;font-weight:900;cursor:pointer;">✅ Soin fait !</button>
+        </div>
+      `;
+    }
+
+    // Bouton gris si inactif
+    var gris = data.shampoings.find(function(s) { return s.inactif === true; });
+    if (gris) {
+      html += `<button class="btn-gris" onclick="validerGris()">🩶 ${gris.nom} — Valider</button>`;
+    }
+
+    // Liste
+    html += `<div class="section-title">Tous les shampooings</div>`;
+    data.shampoings.forEach(function(item) {
+      var estInactif = item.inactif === true;
+      var alerteClasse = item.restant <= 2 ? 'alerte-rouge' : '';
+      html += `
+        <div class="shamp-card ${estInactif ? 'inactif' : ''}" style="border-left-color:${item.coul}">
+          <div class="shamp-top">
+            <div class="pastille-small" style="background:${item.coul}"></div>
+            <span class="shamp-nom">${item.nom}</span>
+            <span>${item.alerte}</span>
+          </div>
+          <div class="shamp-bottom">
+            <span class="compteur ${alerteClasse}">💧 ${item.restant} / ${item.initial}</span>
+            <div class="check-group">
+              <label class="check-label ${item.actif ? 'actif-checked' : ''}" id="lbl-actif-${item.row}">
+                <input type="checkbox" ${item.actif ? 'checked' : ''}
+                  onchange="toggleActif(${item.row}, this.checked)">
+                ${item.actif ? '✅' : '☑️'} Actif
+              </label>
+              <label class="check-label ${estInactif ? 'inactif-checked' : ''}" id="lbl-inactif-${item.row}">
+                <input type="checkbox" ${estInactif ? 'checked' : ''}
+                  onchange="toggleInactif(${item.row}, this.checked)">
+                ${estInactif ? '🚫' : '⬜'} Inactif
+              </label>
+            </div>
+            <button class="btn-reset" onclick="resetFlacon(${item.row})">🔄 Reset</button>
+          </div>
+        </div>
+      `;
+    });
+
+    document.getElementById('app').innerHTML = html;
+  }
+
+  function validerFait() {
+    document.getElementById('btn-fait').disabled = true;
+    callScript("validerFait", null, function() {
+      showToast('✅ Shampoing validé ! Cycle avancé.');
+      callScript("getPlanning", null, render);
+    });
+  }
+
+  function validerSoin() {
+    callScript("validerSoin", null, function() {
+      showToast('🟥 Soin spécial validé !');
+      callScript("getPlanning", null, render);
+    });
+  }
+
+  function validerGris() {
+    callScript("validerGris", null, function() {
+      showToast('🩶 Antipelliculaire validé !');
+      callScript("getPlanning", null, render);
+    });
+  }
+
+  function toggleActif(row, val) {
+    callScript("updateActif", {row: row, actif: val}, function() {
+      showToast(val ? '✅ Activé' : '⬜ Désactivé');
+      callScript("getPlanning", null, render);
+    });
+  }
+
+  function toggleInactif(row, val) {
+    callScript("updateInactif", {row: row, inactif: val}, function() {
+      showToast(val ? '🚫 Mis inactif' : '✅ Réactivé');
+      callScript("getPlanning", null, render);
+    });
+  }
+
+  function resetFlacon(row) {
+    if (!confirm('Réinitialiser ce flacon ?')) return;
+    callScript("resetShampoing", {row: row}, function() {
+      showToast('🔄 Flacon réinitialisé !');
+      callScript("getPlanning", null, render);
+    });
+  }
+
+  function showToast(msg) {
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(function() { t.classList.remove('show'); }, 2800);
+  }
+</script>
+</body>
+</html>
