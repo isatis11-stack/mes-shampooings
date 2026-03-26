@@ -134,7 +134,7 @@
 <div class="toast" id="toast"></div>
 
 <script>
-  var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz5rKOhtLHZke6AQtznscY34nQz5KHcCEd6P1-KWTCKzV17h0caclOoYZDe-lPp4ebtKw/exec";
+  var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw6b2jKroc9FQPegfhdG9PwXcj0as7rU5hAZ9twlllmXpOQlPQU7u-VqMLI1I6K0cP18w/exec";
 
   // Date du jour
   var today = new Date();
@@ -199,8 +199,8 @@
       `;
     }
 
-    // Bouton gris si inactif
-    var gris = data.shampoings.find(function(s) { return s.inactif === true; });
+    // Bouton antipelliculaire (ligne 8 uniquement)
+    var gris = data.shampoings.find(function(s) { return s.row === 8; });
     if (gris) {
       html += `<button class="btn-gris" onclick="validerGris()">🩶 ${gris.nom} — Valider</button>`;
     }
